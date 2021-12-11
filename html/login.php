@@ -1,56 +1,3 @@
-<?php
-
-session_start();
-
-include "db_conn.php";
-
-
-if (isset($_POST['submit'])) {
-
-    $username = $_POST['uname'];
-
-    $pass = $_POST['password'];
-
-    if (empty($username)) {
-
-        header("Location: login.php?error=User Name is required");
-
-        exit();
-    } else if (empty($pass)) {
-
-        header("Location: login.php?error=Password is required");
-
-        exit();
-    } else {
-
-        $sql = "SELECT * FROM users WHERE username='$username' AND password='$pass'"; // single quotes removed
-
-        $result = mysqli_query($conn, $sql);
-
-        $_SESSION['sql'] = $sql;
-
-        if (mysqli_num_rows($result) != 0) {
-
-            $row = mysqli_fetch_assoc($result);
-
-            echo "Logged in!";
-
-            $_SESSION['username'] = $row['username'];
-
-            $_SESSION['id'] = $row['id'];
-
-            header("Location: profile.php");
-
-            exit();
-        } else {
-
-            header("Location: login.php?error=Incorect User name or password");
-
-            exit();
-        }
-    }
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,10 +11,10 @@ if (isset($_POST['submit'])) {
 
 <body>
     <div class="row-cols-3 h-100" style="display: grid; place-items:center;">
-        <form method="POST">
+        <form method="GET">
             <div class="mb-3">
-                <label for="exampleInputUsername1" class="form-label">Username</label>
-                <input type="text" class="form-control" id="exampleInputUsername1" name="uname">
+                <label for="exampleInputaccountid1" class="form-label">AccountID</label>
+                <input type="text" class="form-control" id="exampleInputaccountid1" name="accid">
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -80,3 +27,67 @@ if (isset($_POST['submit'])) {
 </body>
 
 </html>
+
+<?php
+
+include "auth.php";
+
+include "db_conn.php";
+
+if (isset($_GET['submit']) or (isset($_GET['accid']) and isset($_GET['accid']))) {
+
+    $accountid = $_GET['accid'];
+
+    $pass = $_GET['password'];
+
+    if (!$accountid) {
+
+        $message = "Account ID is required!";
+        echo "\n <script>alert('$message');
+        
+        </script>";
+    } else if (!$pass) {
+
+        $message = "Pass is required!";
+        echo "\n <script>alert('$message');
+
+        </script>";
+    } else {
+
+        $sql = "SELECT * FROM users WHERE id=".$accountid." AND password=".$pass." "; // non string 
+
+        $result = mysqli_query($conn, $sql);
+
+        
+
+        if (mysqli_num_rows($result) != 0) {
+            
+            $row = mysqli_fetch_assoc($result);
+
+            echo "Logged in!";
+
+            $_SESSION['accountid'] = $row['id'];
+
+            $_SESSION['username'] = $row['username'];
+
+            $_SESSION['password'] = $row['password'];
+
+            $_SESSION['email'] = $row['email'];
+
+            $_SESSION['salary'] = $row['salary'];
+            
+            header("Location: profile.php");
+
+            exit();
+        } else {
+
+            $message = "Incorrect AccountID and Password";
+            echo "\n <script>alert('$message');
+            
+            </script>";
+            exit();
+        }
+    }
+}
+
+?>

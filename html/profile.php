@@ -1,9 +1,15 @@
 <?php
-session_start();
-include "db_conn.php";
-$sql = $_SESSION['sql'];
-$result = mysqli_query($conn, $sql);
+include "auth.php";
+
+if (empty($_SESSION['username'])){
+    $message = "Log in is required!";
+        echo "\n <script>alert('$message');
+        window.location.href='login.php';
+        </script>";
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,6 +27,7 @@ $result = mysqli_query($conn, $sql);
         <table class="table table-light table-hover table-responsive w-50">
             <thead class="table-dark">
                 <tr>
+                    <th scope="col">Account ID</th>
                     <th scope="col">Username</th>
                     <th scope="col">Email</th>
                     <th scope="col">Password</th>
@@ -29,14 +36,16 @@ $result = mysqli_query($conn, $sql);
             </thead>
             <tbody>
                 <?php
-                while ($row = mysqli_fetch_array($result)) {
+                // while ($row = mysqli_fetch_assoc($result)) {
+            
                     echo "<tr class='light'>
-                            <td>" . $row['username'] . "</td>
-                            <td>" . $row['email'] . "</td>
-                            <td>" . $row['password'] . "</td>
-                            <td>" . $row['salary'] . "</td>
+                            <td>" . $_SESSION['accountid'] . "</td>
+                            <td>" . $_SESSION['username'] . "</td>
+                            <td>" . $_SESSION['email'] . "</td>
+                            <td>" . $_SESSION['password'] . "</td>
+                            <td>" . $_SESSION['salary'] . "</td>
                         </tr>";
-                }
+                // }
                 ?>
             </tbody>
         </table>

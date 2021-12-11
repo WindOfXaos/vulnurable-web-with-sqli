@@ -2,9 +2,9 @@
 
 $sname= "localhost";
 
-$unmae= "root";
+$unmae= "torada";
 
-$password = "";
+$password = "010101";
 
 $db_name = "sqli";
 
